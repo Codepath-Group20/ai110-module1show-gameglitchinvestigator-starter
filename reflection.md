@@ -5,24 +5,29 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 ## 1. What was broken when you started?
 
 - What did the game look like the first time you ran it?
+Show hint doesn't toggle and New Game doesn't reset the game.
+
 - List at least two concrete bugs you noticed at the start  
   (for example: "the hints were backwards").
+1."Enter" key doesn't work and one has to use the Submit Guess button.
+2. The hints were backwards when suggesting choosing larger or smaller number.
 
 **Bug Reproduction Log**
 
 Document at least 3 bugs you found. Add rows as needed.
 
-| Input | Expected Behavior | Actual Behavior | Console Output / Error |
-|-------|-------------------|-----------------|------------------------|
-| | | | |
-| | | | |
-| | | | |
-
+| Input                                     | Expected Behavior                                | Actual Behavior                                  | Console Output / Error |
+|-------------------------------------------|--------------------------------------------------|--------------------------------------------------|------------------------|
+|Guess 40                                   |Should say "Go Lower"                             |Displayed "📈 Go HIGHER!"                         |None                    |
+|Guesses outside 1-100 (e.g., `300`, `-10`) |Should show a warning and not count as an attempt |Allowed the guess and deducted an attempt         |None                    |
+|Total of 7 guesses tracked in history      |Should show "Attempts left: 1" (8 - 7)            |Showed "Attempts left: 0" and triggered Game Over |None                    |
 ---
 
 ## 2. How did you use AI as a teammate?
 
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
+  Copilot in order to save tokens for later use.
+
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
