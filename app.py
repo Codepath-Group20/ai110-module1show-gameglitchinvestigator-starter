@@ -2,7 +2,7 @@ import random
 import streamlit as st
 
 # FIX: Extracted raw conditional logic out of UI rendering loop and refactored to call logic_utils module.
-from logic_utils import check_guess, get_range_for_difficulty, parse_guess, update_score
+from logic_utils import check_guess, get_range_for_difficulty, is_game_over, parse_guess, update_score
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
@@ -33,7 +33,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -45,18 +45,6 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 st.subheader("Make a guess")
-
-st.info(
-    f"Guess a number between 1 and 100. "
-    f"Attempts left: {attempt_limit - st.session_state.attempts}"
-)
-
-with st.expander("Developer Debug Info"):
-    st.write("Secret:", st.session_state.secret)
-    st.write("Attempts:", st.session_state.attempts)
-    st.write("Score:", st.session_state.score)
-    st.write("Difficulty:", difficulty)
-    st.write("History:", st.session_state.history)
 
 raw_guess = st.text_input(
     "Enter your guess:",
@@ -74,6 +62,9 @@ with col3:
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
     st.success("New game started.")
     st.rerun()
 
@@ -91,6 +82,14 @@ if submit:
 
     if not ok:
         st.session_state.history.append(raw_guess)
+        if is_game_over(st.session_state.attempts, attempt_limit):
+            st.session_state.status = "lost"
+            st.error(
+                f"Out of attempts! "
+                f"The secret was {st.session_state.secret}. "
+                f"Score: {st.session_state.score}"
+            )
+            st.stop()
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
@@ -118,14 +117,28 @@ if submit:
                 f"You won! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
-        else:
-            if st.session_state.attempts >= attempt_limit:
-                st.session_state.status = "lost"
-                st.error(
-                    f"Out of attempts! "
-                    f"The secret was {st.session_state.secret}. "
-                    f"Score: {st.session_state.score}"
-                )
+            st.stop()
+        if is_game_over(st.session_state.attempts, attempt_limit):
+            st.session_state.status = "lost"
+            st.error(
+                f"Out of attempts! "
+                f"The secret was {st.session_state.secret}. "
+                f"Score: {st.session_state.score}"
+            )
+            st.stop()
+
+attempts_left = max(0, attempt_limit - st.session_state.attempts)
+st.info(
+    f"Guess a number between 1 and 100. "
+    f"Attempts left: {attempts_left}"
+)
+
+with st.expander("Developer Debug Info"):
+    st.write("Secret:", st.session_state.secret)
+    st.write("Attempts:", st.session_state.attempts)
+    st.write("Score:", st.session_state.score)
+    st.write("Difficulty:", difficulty)
+    st.write("History:", st.session_state.history)
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")

@@ -17,3 +17,10 @@ def test_guess_too_low():
     outcome, message = check_guess(40, 50)
     assert outcome == "Too Low"
     assert message == "📈 Go HIGHER!"
+
+def test_is_game_over():
+    import logic_utils
+    # 7 attempts out of 8 max -> Not game over
+    assert logic_utils.is_game_over(7, 8) is False
+    # 8 attempts out of 8 max -> Game over!
+    assert logic_utils.is_game_over(8, 8) is True

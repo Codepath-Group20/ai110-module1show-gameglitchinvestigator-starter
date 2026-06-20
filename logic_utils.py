@@ -39,6 +39,12 @@ def parse_guess(raw: str):
 
     return True, value, None
 
+
+def is_game_over(current_attempts: int, max_attempts: int) -> bool:
+    """Return True when the game should end due to reaching the maximum attempts."""
+    return current_attempts >= max_attempts
+
+
 # FIX: Replaced empty stub function with proper mathematical bounds and hint logic using Raptor Mini agent guidance.
 # FIX: Refactored game hint logic from app.py into logic_utils.py using Raptor Mini.
 # The AI partner identified that the original code correctly evaluated the 'guess > secret' 
